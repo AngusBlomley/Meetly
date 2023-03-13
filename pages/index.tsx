@@ -12,7 +12,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <Head>
-        <title>Meelty</title>
+        <title>Meetly</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="https://use.typekit.net/esy2wxi.css" />
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
