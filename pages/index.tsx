@@ -8,6 +8,7 @@ const Home: NextPage = () => {
   const [location1, setLocation1] = useState('');
   const [location2, setLocation2] = useState('');
   const [stations, setStations] = useState<{ lat: number; lng: number }[]>([]);
+  const apiKey = 'AIzaSyDznjaPRiRDOJY4eLp9Yh_XOZu2ektKm3c';
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
