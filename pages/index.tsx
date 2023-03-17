@@ -1,13 +1,13 @@
 import Head from "next/head";
 import React, { FormEvent, useState, useEffect, useRef } from "react";
 import {
+  Library,
   GoogleMap,
   LoadScript,
   Marker,
   Autocomplete,
 } from "@react-google-maps/api";
 import axios from "axios";
-import { Library } from "@react-google-maps/api";
 
 interface Location {
   lat: number;
