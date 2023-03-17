@@ -201,8 +201,6 @@ const NearestStationFinder: React.FC = () => {
   );
 };
 
-export default NearestStationFinder;
-
 export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   id,
   label,
@@ -244,3 +242,5 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     </div>
   );
 };
+
+export default NearestStationFinder;
