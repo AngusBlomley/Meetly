@@ -191,14 +191,68 @@ const NearestStationFinder: React.FC = () => {
               </form>
             </div>
           )}
+
           {!formVisible && (
             // Render the Back button to show the form again
-            <button
-              className="mt-auto w-32 align-bottom border-solid border-2 border-black p-2 bg-blue-400 hover:bg-blue-500"
-              onClick={() => setFormVisible(true)}
-            >
-              Back
-            </button>
+            <>
+              <div className=" text-center bg-opacity-75 bg-black p-5 mt-20 border-2 border-black">
+                <p className="text-white">
+                  The best station to meet up at between Location 1 and Location
+                  2 is:
+                  <br></br> Center Location
+                </p>
+              </div>
+              <div className="fixed top-20 right-0 mr-20 lg:absolute lg:float-right lg:w-48 lg:h-38 lg:align-top lg:border-solid lg:border-2 lg:border-black lg:p-2 lg:bg-white hidden lg:block sm:invisible xl:visible">
+                <h2 className="flex justify-center font-bold text-lg">
+                  Legend
+                </h2>
+                <div className="mt-2">
+                  <div className="inline-flex">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="%230000FF"
+                    >
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    <h3>Location 1</h3>
+                  </div>
+                  <div className="inline-flex">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="%230000FF"
+                    >
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    <h3>Location 2</h3>
+                  </div>
+                  <div className="inline-flex">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="%230000FF"
+                    >
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    <h3>Center Location</h3>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                className="mt-auto w-32 align-bottom border-solid border-2 border-black p-2 bg-blue-400 hover:bg-blue-500"
+                onClick={() => setFormVisible(true)}
+              >
+                Back
+              </button>
+            </>
           )}
 
           <GoogleMap // Render the Google Map with markers for entered addresses and the nearest station
