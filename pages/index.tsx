@@ -49,6 +49,18 @@ const NearestStationFinder: React.FC = () => {
     null
   );
 
+  const mapRef = useRef<google.maps.Map>();
+
+  const onMapLoad = (map: google.maps.Map) => {
+    mapRef.current = map;
+  };
+
+  const panTo = (center: Location) => {
+    if (mapRef.current) {
+      mapRef.current.panTo(center);
+    }
+  };
+
   // Get user's current location or default to London if geolocation fails
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -134,7 +146,7 @@ const NearestStationFinder: React.FC = () => {
               location: station.geometry.location,
             });
 
-            setMapCenter(midpoint);
+            panTo(midpoint);
           })
           .catch((error) => {
             console.error("Error finding the nearest station:", error);
@@ -195,14 +207,18 @@ const NearestStationFinder: React.FC = () => {
           {!formVisible && (
             // Render the Back button to show the form again
             <>
-              <div className=" text-center bg-opacity-75 bg-black p-5 mt-20 border-2 border-black">
-                <p className="text-white">
-                  The best station to meet up at between Location 1 and Location
-                  2 is:
-                  <br></br> Center Location
+              <div className="mt-10 lg:float-right lg:h-38 lg:align-top lg:border-solid lg:border-2 lg:border-black lg:p-2 lg:bg-white hidden lg:block sm:invisible xl:visible">
+                <p className="text-center text-lg">
+                  The best station to meet up between
+                  <strong> {address1} </strong> and
+                  <strong> {address2} </strong> is:
+                  <br></br>
+                  <strong>
+                    {mapCenter ? ` ${nearestStation?.name}!` : ""}{" "}
+                  </strong>
                 </p>
               </div>
-              <div className="fixed top-20 right-0 mr-20 lg:absolute lg:float-right lg:w-48 lg:h-38 lg:align-top lg:border-solid lg:border-2 lg:border-black lg:p-2 lg:bg-white hidden lg:block sm:invisible xl:visible">
+              <div className="fixed top-10 right-0 mr-20 lg:absolute lg:float-right lg:w-48 lg:h-38 lg:align-top lg:border-solid lg:border-2 lg:border-black lg:p-2 lg:bg-white hidden lg:block sm:invisible xl:visible">
                 <h2 className="flex justify-center font-bold text-lg">
                   Legend
                 </h2>
@@ -213,11 +229,11 @@ const NearestStationFinder: React.FC = () => {
                       viewBox="0 0 24 24"
                       width="24"
                       height="24"
-                      fill="%230000FF"
+                      fill="#0448be"
                     >
                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
-                    <h3>Location 1</h3>
+                    <h3>Location one</h3>
                   </div>
                   <div className="inline-flex">
                     <svg
@@ -225,11 +241,11 @@ const NearestStationFinder: React.FC = () => {
                       viewBox="0 0 24 24"
                       width="24"
                       height="24"
-                      fill="%230000FF"
+                      fill="#038c03"
                     >
                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
-                    <h3>Location 2</h3>
+                    <h3>Location two</h3>
                   </div>
                   <div className="inline-flex">
                     <svg
@@ -237,11 +253,11 @@ const NearestStationFinder: React.FC = () => {
                       viewBox="0 0 24 24"
                       width="24"
                       height="24"
-                      fill="%230000FF"
+                      fill="#b90404"
                     >
                       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                     </svg>
-                    <h3>Center Location</h3>
+                    <h3>Meetup Point</h3>
                   </div>
                 </div>
               </div>
@@ -256,8 +272,10 @@ const NearestStationFinder: React.FC = () => {
           )}
 
           <GoogleMap // Render the Google Map with markers for entered addresses and the nearest station
+            ref={mapRef}
             center={mapCenter}
             zoom={14}
+            onLoad={onMapLoad}
             mapContainerStyle={{
               position: "absolute",
               left: "0",
@@ -274,7 +292,7 @@ const NearestStationFinder: React.FC = () => {
                 position={address1Location}
                 title="Address 1"
                 icon={{
-                  url: "data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23288a2b'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/></svg>",
+                  url: "data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%230448be'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/></svg>",
                   scaledSize: new google.maps.Size(48, 48),
                   origin: new google.maps.Point(0, 0),
                   anchor: new google.maps.Point(12, 24),
@@ -287,7 +305,7 @@ const NearestStationFinder: React.FC = () => {
                 position={address2Location}
                 title="Address 2"
                 icon={{
-                  url: "data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23288a2b'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/></svg>",
+                  url: "data:image/svg+xml;utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='%23038c03'><path d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/></svg>",
                   scaledSize: new google.maps.Size(48, 48),
                   origin: new google.maps.Point(0, 0),
                   anchor: new google.maps.Point(12, 24),
