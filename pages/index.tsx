@@ -90,70 +90,92 @@ const NearestStationFinder: React.FC = () => {
   };
 
   // Find the nearest station based on two input addresses
-  const findNearestStation = () => {
-    const corsProxy = "http://localhost:3001/api?url=";
-    const placesUrl =
-      corsProxy +
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-    const geocodeUrl = "https://maps.googleapis.com/maps/api/geocode/json";
+  const findNearestStation = async () => {
+    const apiRoute = "/api/google_api";
+
+    const geocodeCallbackAsync = async (endpoint: string, address: string) => {
+      try {
+        const response = await axios.post(apiRoute, {
+          endpoint,
+          params: { address },
+        });
+
+        const location = response.data.results[0].geometry.location;
+        return [location, null];
+      } catch (error) {
+        return [null, error];
+      }
+    };
 
     // Geocode the first address
-    geocodeCallback(geocodeUrl, address1, (err1, location1) => {
-      if (err1) {
-        console.error("Error geocoding address 1:", err1);
-        alert("Error geocoding address 1. Please try again.");
+    const [location1, err1] = await geocodeCallbackAsync("geocode", address1);
+
+    if (err1) {
+      console.error("Error geocoding address 1:", err1);
+      alert("Error geocoding address 1. Please try again.");
+      return;
+    }
+
+    setAddress1Location(location1);
+
+    // Geocode the second address
+    const [location2, err2] = await geocodeCallbackAsync("geocode", address2);
+
+    if (err2) {
+      console.error("Error geocoding address 2:", err2);
+      alert("Error geocoding address 2. Please try again.");
+      return;
+    }
+
+    setAddress2Location(location2);
+
+    // Calculate the midpoint between two locations
+    const midpoint: Location = {
+      lat: (location1!.lat + location2!.lat) / 2,
+      lng: (location1!.lng + location2!.lng) / 2,
+    };
+
+    // Find the nearest station using Google Places API
+    try {
+      const res = await axios.post(apiRoute, {
+        endpoint: "place/nearbysearch",
+        params: {
+          location: `${midpoint.lat},${midpoint.lng}`,
+          radius: 5000,
+          type: "train_station|subway_station",
+        },
+      });
+
+      if (res.data.results.length === 0) {
+        alert("No stations found nearby");
         return;
       }
 
-      setAddress1Location(location1);
-
-      // Geocode the second address
-      geocodeCallback(geocodeUrl, address2, (err2, location2) => {
-        if (err2) {
-          console.error("Error geocoding address 2:", err2);
-          alert("Error geocoding address 2. Please try again.");
-          return;
-        }
-
-        setAddress2Location(location2);
-
-        // Calculate the midpoint between two locations
-        const midpoint: Location = {
-          lat: (location1!.lat + location2!.lat) / 2,
-          lng: (location1!.lng + location2!.lng) / 2,
-        };
-
-        // Find the nearest station using Google Places API
-        axios
-          .get(placesUrl, {
-            params: {
-              location: `${midpoint.lat},${midpoint.lng}`,
-              radius: 5000,
-              type: "train_station|subway_station",
-              key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-            },
-          })
-          .then((res) => {
-            if (res.data.results.length === 0) {
-              alert("No stations found nearby");
-              return;
-            }
-
-            // Set the nearest station and center the map
-            const station = res.data.results[0];
-            setNearestStation({
-              name: station.name,
-              location: station.geometry.location,
-            });
-
-            panTo(midpoint);
-          })
-          .catch((error) => {
-            console.error("Error finding the nearest station:", error);
-            alert("Error finding the nearest station. Please try again.");
-          });
+      // Set the nearest station and center the map
+      const station = res.data.results[0];
+      setNearestStation({
+        name: station.name,
+        location: station.geometry.location,
       });
-    });
+
+      panTo(midpoint);
+    } catch (error) {
+      console.error("Error finding the nearest station:", error);
+      alert("Error finding the nearest station. Please try again.");
+    }
+  };
+
+  const geocodeCallbackAsync = async (url: string, address: string) => {
+    try {
+      const response = await axios.get(url, {
+        params: { address, key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY },
+      });
+
+      const location = response.data.results[0].geometry.location;
+      return [location, null];
+    } catch (error) {
+      return [null, error];
+    }
   };
 
   // Render the main component
@@ -261,14 +283,23 @@ const NearestStationFinder: React.FC = () => {
                   </div>
                 </div>
               </div>
-
-              <button
-                className="mt-auto w-32 align-bottom border-solid border-2 border-black p-2 bg-blue-400 hover:bg-blue-500"
-                onClick={() => setFormVisible(true)}
-              >
-                Back
-              </button>
+              <div className="mt-auto">
+                <button
+                  className="mb-4 w-32 align-bottom border-solid border-2 border-black p-2 bg-blue-400 hover:bg-blue-500"
+                  onClick={() => setFormVisible(true)}
+                >
+                  Back
+                </button>
+              </div>
             </>
+          )}
+
+          {formVisible && (
+            <footer className="fixed left-0 bottom-0 w-full p-5">
+              <h6 className="opacity-75 font-rooney text-center">
+                Created by Angus Blomley
+              </h6>
+            </footer>
           )}
 
           <GoogleMap // Render the Google Map with markers for entered addresses and the nearest station
