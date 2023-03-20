@@ -27,11 +27,6 @@ This app is perfect for planning meetups, allowing users to quickly discover a c
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 
 4. Run the development server using `npm run dev`.
-5. Run the development CORS proxy server by opening a second terminal and entering the following two commands:
-
- cd my-cors-proxy
- node index.js
- 
-6. Open your browser and navigate to `http://localhost:3000`.
+5. Open your browser and navigate to `http://localhost:3000`.
 
 Start planning your meetups with React Meetly!
