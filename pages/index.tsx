@@ -141,8 +141,8 @@ const NearestStationFinder: React.FC = () => {
         endpoint: "place/nearbysearch",
         params: {
           location: `${midpoint.lat},${midpoint.lng}`,
-          radius: 5000,
-          type: "train_station|subway_station",
+          radius: 2000,
+          type: "train_station|subway_station|light_rail_station",
         },
       });
 
