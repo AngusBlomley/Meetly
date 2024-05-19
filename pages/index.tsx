@@ -2,7 +2,6 @@
 import Head from "next/head";
 import React, { FormEvent, useState, useEffect, useRef } from "react";
 import {
-  Library,
   GoogleMap,
   LoadScript,
   Marker,
@@ -30,11 +29,20 @@ interface PlacesAutocompleteProps {
 }
 
 // Define the Google Maps libraries to be used
-const libraries: Library[] = ["places"];
+const libraries: String[] = ["places"];
 
 // Main component for finding the nearest station
 const NearestStationFinder: React.FC = () => {
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+
+  if (!googleMapsApiKey) {
+    return (
+      <div>
+        <h1>Google Maps API key is missing!</h1>
+        <p>Please set the NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable.</p>
+      </div>
+    );
+  }
 
   // Set initial states for address and map information
   const [address1, setAddress1] = useState<string>("");
@@ -49,7 +57,7 @@ const NearestStationFinder: React.FC = () => {
     null
   );
 
-  const mapRef = useRef<google.maps.Map>();
+  const mapRef = useRef<google.maps.Map | null>(null);
 
   const onMapLoad = (map: google.maps.Map) => {
     mapRef.current = map;
@@ -74,20 +82,6 @@ const NearestStationFinder: React.FC = () => {
       }
     );
   }, []);
-
-  // Geocode an address and handle errors
-  const geocodeCallback = (
-    url: string,
-    address: string,
-    callback: (err: Error | null, location: Location | null) => void
-  ) => {
-    axios
-      .get(url, {
-        params: { address, key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY },
-      })
-      .then((res) => callback(null, res.data.results[0].geometry.location))
-      .catch((err) => callback(err, null));
-  };
 
   // Find the nearest station based on two input addresses
   const findNearestStation = async () => {
@@ -165,19 +159,6 @@ const NearestStationFinder: React.FC = () => {
     }
   };
 
-  const geocodeCallbackAsync = async (url: string, address: string) => {
-    try {
-      const response = await axios.get(url, {
-        params: { address, key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY },
-      });
-
-      const location = response.data.results[0].geometry.location;
-      return [location, null];
-    } catch (error) {
-      return [null, error];
-    }
-  };
-
   // Render the main component
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -186,7 +167,10 @@ const NearestStationFinder: React.FC = () => {
       </Head>
 
       <main className="animate-fade-in opacity-0 z-10 flex w-full flex-1 flex-col items-center justify-center px-20 font-poppins">
-        <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={libraries}>
+        <LoadScript
+          googleMapsApiKey={googleMapsApiKey}
+          libraries={["places"]}
+        >
           {formVisible && (
             // Render the form for entering two addresses
             <div className="w-96">
@@ -303,10 +287,9 @@ const NearestStationFinder: React.FC = () => {
           )}
 
           <GoogleMap // Render the Google Map with markers for entered addresses and the nearest station
-            ref={mapRef}
+            onLoad={onMapLoad}
             center={mapCenter}
             zoom={14}
-            onLoad={onMapLoad}
             mapContainerStyle={{
               position: "absolute",
               left: "0",

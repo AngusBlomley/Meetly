@@ -36,3 +36,7 @@ apiKey.env
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#enviroment variables
+.env
+.vercel
