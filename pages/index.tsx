@@ -2,10 +2,6 @@
 import Head from "next/head";
 import React, { FormEvent, useState, useEffect, useRef } from "react";
 import {
-<<<<<<< HEAD
-  Library,
-=======
->>>>>>> Meetly-Master/main
   GoogleMap,
   LoadScript,
   Marker,
@@ -33,13 +29,6 @@ interface PlacesAutocompleteProps {
 }
 
 // Define the Google Maps libraries to be used
-<<<<<<< HEAD
-const libraries: Library[] = ["places"];
-
-// Main component for finding the nearest station
-const NearestStationFinder: React.FC = () => {
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-=======
 const libraries: String[] = ["places"];
 
 // Main component for finding the nearest station
@@ -54,7 +43,6 @@ const NearestStationFinder: React.FC = () => {
       </div>
     );
   }
->>>>>>> Meetly-Master/main
 
   // Set initial states for address and map information
   const [address1, setAddress1] = useState<string>("");
@@ -69,11 +57,7 @@ const NearestStationFinder: React.FC = () => {
     null
   );
 
-<<<<<<< HEAD
-  const mapRef = useRef<google.maps.Map>();
-=======
   const mapRef = useRef<google.maps.Map | null>(null);
->>>>>>> Meetly-Master/main
 
   const onMapLoad = (map: google.maps.Map) => {
     mapRef.current = map;
@@ -99,23 +83,6 @@ const NearestStationFinder: React.FC = () => {
     );
   }, []);
 
-<<<<<<< HEAD
-  // Geocode an address and handle errors
-  const geocodeCallback = (
-    url: string,
-    address: string,
-    callback: (err: Error | null, location: Location | null) => void
-  ) => {
-    axios
-      .get(url, {
-        params: { address, key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY },
-      })
-      .then((res) => callback(null, res.data.results[0].geometry.location))
-      .catch((err) => callback(err, null));
-  };
-
-=======
->>>>>>> Meetly-Master/main
   // Find the nearest station based on two input addresses
   const findNearestStation = async () => {
     const apiRoute = "/api/google_api";
@@ -168,13 +135,8 @@ const NearestStationFinder: React.FC = () => {
         endpoint: "place/nearbysearch",
         params: {
           location: `${midpoint.lat},${midpoint.lng}`,
-<<<<<<< HEAD
-          radius: 5000,
-          type: "train_station|subway_station",
-=======
           radius: 2000,
           type: "train_station|subway_station|light_rail_station",
->>>>>>> Meetly-Master/main
         },
       });
 
@@ -197,22 +159,6 @@ const NearestStationFinder: React.FC = () => {
     }
   };
 
-<<<<<<< HEAD
-  const geocodeCallbackAsync = async (url: string, address: string) => {
-    try {
-      const response = await axios.get(url, {
-        params: { address, key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY },
-      });
-
-      const location = response.data.results[0].geometry.location;
-      return [location, null];
-    } catch (error) {
-      return [null, error];
-    }
-  };
-
-=======
->>>>>>> Meetly-Master/main
   // Render the main component
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -221,14 +167,10 @@ const NearestStationFinder: React.FC = () => {
       </Head>
 
       <main className="animate-fade-in opacity-0 z-10 flex w-full flex-1 flex-col items-center justify-center px-20 font-poppins">
-<<<<<<< HEAD
-        <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={libraries}>
-=======
         <LoadScript
           googleMapsApiKey={googleMapsApiKey}
           libraries={["places"]}
         >
->>>>>>> Meetly-Master/main
           {formVisible && (
             // Render the form for entering two addresses
             <div className="w-96">
@@ -345,16 +287,9 @@ const NearestStationFinder: React.FC = () => {
           )}
 
           <GoogleMap // Render the Google Map with markers for entered addresses and the nearest station
-<<<<<<< HEAD
-            ref={mapRef}
-            center={mapCenter}
-            zoom={14}
-            onLoad={onMapLoad}
-=======
             onLoad={onMapLoad}
             center={mapCenter}
             zoom={14}
->>>>>>> Meetly-Master/main
             mapContainerStyle={{
               position: "absolute",
               left: "0",

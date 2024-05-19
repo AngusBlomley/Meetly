@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-// pages/api/google_api.ts
-=======
->>>>>>> Meetly-Master/main
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 

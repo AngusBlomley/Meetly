@@ -36,10 +36,7 @@ apiKey.env
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-<<<<<<< HEAD
-=======
 
 #enviroment variables
 .env
 .vercel
->>>>>>> Meetly-Master/main
