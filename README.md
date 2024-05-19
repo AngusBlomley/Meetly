@@ -1,6 +1,6 @@
 # Meetly
 
-meetly-zeta.vercel.app
+[meetly](https://meetly-zeta.vercel.app)
 
 React Meetly is a web application that helps users find the nearest train station between two addresses. 
 This app is perfect for planning meetups, allowing users to quickly discover a convenient location for both parties.
