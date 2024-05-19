@@ -57,7 +57,7 @@ const NearestStationFinder: React.FC = () => {
     null
   );
 
-  const mapRef = useRef<google.maps.Map>();
+  const mapRef = useRef<google.maps.Map | null>(null);
 
   const onMapLoad = (map: google.maps.Map) => {
     mapRef.current = map;
@@ -287,10 +287,9 @@ const NearestStationFinder: React.FC = () => {
           )}
 
           <GoogleMap // Render the Google Map with markers for entered addresses and the nearest station
-            ref={mapRef}
+            onLoad={onMapLoad}
             center={mapCenter}
             zoom={14}
-            onLoad={onMapLoad}
             mapContainerStyle={{
               position: "absolute",
               left: "0",
