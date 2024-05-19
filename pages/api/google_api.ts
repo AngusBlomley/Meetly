@@ -1,4 +1,3 @@
-// pages/api/google_api.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 
