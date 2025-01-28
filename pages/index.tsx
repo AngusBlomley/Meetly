@@ -39,7 +39,9 @@ const NearestStationFinder: React.FC = () => {
     return (
       <div>
         <h1>Google Maps API key is missing!</h1>
-        <p>Please set the NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable.</p>
+        <p>
+          Please set the NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable.
+        </p>
       </div>
     );
   }
@@ -135,7 +137,7 @@ const NearestStationFinder: React.FC = () => {
         endpoint: "place/nearbysearch",
         params: {
           location: `${midpoint.lat},${midpoint.lng}`,
-          radius: 2000,
+          radius: 20000,
           type: "train_station|subway_station|light_rail_station",
         },
       });
@@ -167,10 +169,7 @@ const NearestStationFinder: React.FC = () => {
       </Head>
 
       <main className="animate-fade-in opacity-0 z-10 flex w-full flex-1 flex-col items-center justify-center px-20 font-poppins">
-        <LoadScript
-          googleMapsApiKey={googleMapsApiKey}
-          libraries={["places"]}
-        >
+        <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={["places"]}>
           {formVisible && (
             // Render the form for entering two addresses
             <div className="w-96">
@@ -347,23 +346,29 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   value,
   onChange,
 }) => {
-  // Create a ref to store the Google Places Autocomplete instance
   const autocompleteRef = useRef<google.maps.places.Autocomplete>();
 
-  // Function to initialize the Autocomplete instance on load
   const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
-    autocomplete.setFields(["address_components", "geometry", "icon", "name"]);
     autocompleteRef.current = autocomplete;
+    autocompleteRef.current.setFields(["formatted_address", "geometry"]);
   };
 
-  // Function to handle when the selected place changes in the Autocomplete input
   const onPlaceChanged = () => {
-    if (!autocompleteRef.current) return;
-    const place = autocompleteRef.current.getPlace();
-    onChange(place.formatted_address || "");
+    try {
+      const autocomplete = autocompleteRef.current;
+      if (autocomplete) {
+        const place = autocomplete.getPlace();
+        // Only update if we have a proper place result with formatted_address
+        if (place && place.formatted_address) {
+          onChange(place.formatted_address);
+        }
+      }
+    } catch (error) {
+      // If there's an error, don't update the value
+      console.log("Error in place selection:", error);
+    }
   };
 
-  //Return Autocomplete
   return (
     <div>
       <label htmlFor={id} className="sr-only">
@@ -381,6 +386,11 @@ export const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={label}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
         />
       </Autocomplete>
     </div>
